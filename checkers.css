@@ -1,0 +1,45 @@
+body  {
+  background-color: black;
+}
+
+#board {
+  width: 600px;
+  height: 600px;
+  margin: auto;
+}
+
+.space {
+  background-color: white;
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+  margin: 30px;
+  float: left;
+}
+
+.blank {
+  background-color: black;
+  border-radius: 50%;
+  height: 15px;
+  width: 15px;
+  margin: 30px;
+  float: left;
+}
+
+.red {
+  background-color: red;
+  border-radius: 50%;
+  height: 59px;
+  width: 59px;
+  margin: 8px;
+  float: left;
+}
+
+.blue {
+  background-color: blue;
+  border-radius: 50%;
+  height: 59px;
+  width: 59px;
+  margin: 8px;
+  float: left;
+}

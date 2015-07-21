@@ -1,0 +1,4 @@
+Create a checkers game
+Create an AI opponent who learns as it plays
+Create an "analysis board" like chess.com's
+populate analysis board with positions played by AI after it is trained
