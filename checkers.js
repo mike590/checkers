@@ -1,5 +1,14 @@
 var spaceNodes, spaces, turn, moves, pieceSelected;
 
+Object.prototype.borders = function(val) {
+  for(var prop in this) {
+    if(this.hasOwnProperty(prop) && this[prop] === val) {
+      return prop;   
+    }
+  }
+  return false;
+};
+
 window.onload = function(){
   spaceNodes = document.querySelectorAll(".moveable");
   spaces = [];
@@ -9,24 +18,40 @@ window.onload = function(){
   newGame();
   spaces.forEach(function(el){
     el.addEventListener("click", function(e){
-      if(!pieceSelected && this.className.indexOf("space") === -1){
+      if(!pieceSelected && this.className.indexOf(turn) != -1){
         selectPiece(el);
+      } else if(!pieceSelected){
+        return null;
+      } else if(pieceSelected.piece === el){
+        pieceSelected = false;
+      } else if(pieceSelected.neighbors.borders(el)){
+        el.className.indexOf("space") != -1 ? makeMove(pieceSelected.piece, el) : null;
+      } else{
+        var opp = turn === "red" ? "blue" : "red";
+        for(var property in pieceSelected.neighbors){
+          if(pieceSelected.neighbors[property].className.indexOf(opp) != -1){
+            tempNeigh = findNeighbors(pieceSelected.neighbors[property]);
+            for(var prop in tempNeigh){
+              if(tempNeigh[property] === el && el.className.indexOf("space") != -1){
+                takePiece(pieceSelected.piece, el, pieceSelected.neighbors[property])
+              }
+            }
+          }
+        }
       }
     })
   });
 };
 
 function selectPiece(space){
-  // pieceSelected = true;
   var neighbors = findNeighbors(space);
-  console.log(neighbors);
-
+  pieceSelected = {piece: space, neighbors: neighbors};
 }
 
 function findNeighbors(space){
 
   var row, neighbors = {}, side = false, id = parseInt(space.id);
-
+  debugger
   if([8, 16, 24, 32].indexOf(id) != -1){
     side = "left";
   } else if ([1, 9, 17, 25].indexOf(id) != -1){
@@ -61,12 +86,17 @@ function findNeighbors(space){
       neighbors.dl = id - 3;
       neighbors.dr = id - 4;
     }
-    for (var property in neighbors){
-      if (neighbors.hasOwnProperty(property)){
-        if(neighbors[property] < 1 || neighbors[property] > 32){
-          delete neighbors[property];
-        }
+  }
+  for (var property in neighbors){
+    if (neighbors.hasOwnProperty(property)){
+      if(neighbors[property] < 1 || neighbors[property] > 32){
+        delete neighbors[property];
       }
+    }
+  }
+  for (var property in neighbors){
+    if (neighbors.hasOwnProperty(property)){
+      neighbors[property] = document.getElementById(neighbors[property])
     }
   }
 
@@ -84,8 +114,11 @@ function makeMove(space_1, space_2){
   pieceSelected = false;
 }
 
-function takePiece(){
-
+function takePiece(space_1, space_2, taken){
+  makeMove(space_1, space_2);
+  changeSpace(taken, "space");
+  turn = turn === "red" ? "blue" : "red";
+  pieceSelected = false;
 }
 
 function newGame(){
